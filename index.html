@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LiveDB Entry - IMS_C10</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9fafb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+    h2 {
+      color: #333;
+    }
+    input, button {
+      padding: 10px;
+      margin: 8px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 250px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h2>Enter Name and Age</h2>
+  <input type="text" id="name" placeholder="Name" />
+  <input type="number" id="age" placeholder="Age" />
+  <button onclick="submitData()">Submit</button>
+  <div class="message" id="message"></div>
+
+  <script>
+    async function submitData() {
+      const name = document.getElementById('name').value.trim();
+      const age = document.getElementById('age').value.trim();
+      const messageEl = document.getElementById('message');
+
+      if (!name || !age) {
+        messageEl.style.color = 'red';
+        messageEl.textContent = "Please enter both name and age.";
+        return;
+      }
+
+      try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbwMYA0vlZECfoeRjWkjQl6U3eL3NwknEMVO57CGz5JNiKqC_RnMtv6jpwRNggR2ocfYvg/exec', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, age })
+        });
+
+        const result = await response.json();
+        if (result.status === "success") {
+          messageEl.style.color = 'green';
+          messageEl.textContent = "Data added successfully!";
+          document.getElementById('name').value = "";
+          document.getElementById('age').value = "";
+        } else {
+          messageEl.style.color = 'red';
+          messageEl.textContent = "Error: " + result.message;
+        }
+      } catch (error) {
+        messageEl.style.color = 'red';
+        messageEl.textContent = "Request failed. Please try again.";
+      }
+    }
+  </script>
+</body>
+</html>
